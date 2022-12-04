@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "101085042019",
+    "project_id": "suminsa-b2a35",
+    "storage_bucket": "suminsa-b2a35.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101085042019:android:61eef411ac78d056a4ef56",
+        "android_client_info": {
+          "package_name": "kr.ac.mjc.itc2019261019.suminstagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "101085042019-tm4mhum7d0ds22vh97u9f5og1j98ao8t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeHtw9oW0gLxYxjnoxHirJpzxxjJA1StM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101085042019-tm4mhum7d0ds22vh97u9f5og1j98ao8t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
