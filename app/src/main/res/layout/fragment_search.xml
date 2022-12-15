@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/search_rv"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -15,9 +15,9 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
-        app:queryHint="검색"
         android:layout_width="0dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:queryHint="검색">
 
     </androidx.appcompat.widget.SearchView>
 
