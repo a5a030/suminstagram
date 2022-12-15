@@ -1,6 +1,7 @@
 package kr.ac.mjc.itc2019261019.suminstagram;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +15,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class JoinActivity extends AppCompatActivity {
+    FirebaseAuth auth;
+    FirebaseStorage storage;
+
+    Uri profileImage;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +53,8 @@ public class JoinActivity extends AppCompatActivity {
 
                 int strLength = password.length();
 
+                auth = FirebaseAuth.getInstance();
+
                 if(email.equals("")) {
                     Toast.makeText(JoinActivity.this, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show();
                     return;
@@ -61,37 +75,65 @@ public class JoinActivity extends AppCompatActivity {
                     return;
                 }
 
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-
-//                if(strLength >= 6) {
-//                    auth.createUserWithEmailAndPassword(email, password);
-//                } else {
-//                    Toast.makeText(JoinActivity.this, "비밀번호는 6자리 이상이어야 합니다.", Toast.LENGTH_SHORT).show();
-//                }
-
-                auth.createUserWithEmailAndPassword(email, password)
-                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-                                FirebaseUser user = authResult.getUser();
-                                Log.d("JoinActivity", user.getEmail());
-                                finish();
-                                Toast.makeText(JoinActivity.this, "회원가입이 완료됐습니다.", Toast.LENGTH_SHORT).show();
-
-                                Intent intent = new Intent(JoinActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("JoinActivity", e.getMessage());
-                                Toast.makeText(JoinActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
+                if(strLength < 6) {
+                    Toast.makeText(JoinActivity.this, "비밀번호는 6자리 이상이어야 합니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    register(email, fullName, username, password);
+                }
             }
         });
+    }
+
+    private void register(String email, String fullName, String username, String password) {
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        FirebaseUser user = authResult.getUser();
+                        Log.d("JoinActivity", user.getEmail());
+
+                        storage.getReference().child("Users").child(username)
+                                .putFile(profileImage)
+                                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        taskSnapshot.getMetadata().getReference().getDownloadUrl()
+                                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                    @Override
+                                                    public void onSuccess(Uri uri) {
+                                                        String imageUri = uri.toString();
+                                                        Log.d("JoinActivity", imageUri);
+
+                                                        Post post = new Post();
+                                                        post.setImageUri(imageUri);
+                                                    }
+                                                });
+                                    }
+                                });
+
+
+                        Map<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("email", email);
+                        hashMap.put("username", username.toLowerCase());
+                        hashMap.put("fullname", fullName);
+                        hashMap.put("bio","");
+                        hashMap.put("imageurl", profileImage);
+
+                        storage.getReference().setValue()
+                        finish();
+                        Toast.makeText(JoinActivity.this, "회원가입이 완료됐습니다.", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(JoinActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("JoinActivity", e.getMessage());
+                        Toast.makeText(JoinActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
