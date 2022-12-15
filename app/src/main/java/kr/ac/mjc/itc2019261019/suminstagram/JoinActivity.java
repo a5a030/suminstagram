@@ -119,7 +119,7 @@ public class JoinActivity extends AppCompatActivity {
                         hashMap.put("bio","");
                         hashMap.put("imageurl", profileImage);
 
-                        storage.getReference().setValue()
+//                        storage.getReference().setValue()
                         finish();
                         Toast.makeText(JoinActivity.this, "회원가입이 완료됐습니다.", Toast.LENGTH_SHORT).show();
 
